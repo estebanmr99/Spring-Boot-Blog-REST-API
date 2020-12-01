@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS `posts`;
 DROP TABLE IF EXISTS `photos`;
 DROP TABLE IF EXISTS `albums`;
 DROP TABLE IF EXISTS `todos`;
+DROP TABLE IF EXISTS `categories`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `address`;
 DROP TABLE IF EXISTS `company`;
@@ -125,18 +126,34 @@ CREATE TABLE `photos` (
   CONSTRAINT `fk_album` FOREIGN KEY (`album_id`) REFERENCES `albums` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-CREATE TABLE `posts` (
+CREATE TABLE `categories` (
   `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
-  `body` text NOT NULL,
+  `name` varchar(255) NOT NULL,
   `user_id` bigint(19) unsigned DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` bigint(19) unsigned DEFAULT NULL,
   `updated_by` bigint(19) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `fk_user_category` (`user_id`),
+  CONSTRAINT `fk_user_category` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `posts` (
+  `id` bigint(19) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `body` text NOT NULL,
+  `user_id` bigint(19) unsigned DEFAULT NULL,
+  `category_id` bigint(19) unsigned DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` bigint(19) unsigned DEFAULT NULL,
+  `updated_by` bigint(19) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `fk_user_post` (`user_id`),
-  CONSTRAINT `fk_user_post` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  KEY `fk_category_post` (`category_id`),
+  CONSTRAINT `fk_user_post` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `fk_category_post` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `post_tag` (
